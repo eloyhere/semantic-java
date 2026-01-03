@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 项目基本信息 -->
+    <groupId>pers.eloyhere.semantic</groupId>
+    <artifactId>semantic-java</artifactId>
+    <version>1.0.0</version> <!-- 您可以根据需要调整版本号 -->
+
+    <name>Semantic Java</name>
+    <description>A powerful, type-safe utility library for semantic data processing in Java.
+        Provides composable, functional-style constructs for working with collections, streams, and sequences —
+        with support for sorting, filtering, grouping, statistics, and more.
+    </description>
+    <url>https://github.com/eloyhere/semantic-java</url> <!-- 假设的GitHub地址，请根据实际情况修改 -->
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17.0.1</java.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Maven Compiler Plugin 配置，确保使用 JDK 17 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version> <!-- 请根据需要使用最新版本 -->
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <!-- 可根据需要添加其他插件，如打包插件等 -->
+        </plugins>
+    </build>
+
+    <!-- 当前项目无任何外部依赖 -->
+    <dependencies>
+        <!-- 无依赖 -->
+    </dependencies>
+
+    <!-- 可根据需要添加其他配置，如开发者信息、许可证等 -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>eloyhere</name>
+            <email>eloyhere@example.com</email> <!-- 请根据实际情况修改邮箱 -->
+            <organization>eloyhere</organization>
+            <organizationUrl>https://github.com/eloyhere</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/eloyhere/semantic-java.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eloyhere/semantic-java.git</developerConnection>
+        <url>https://github.com/eloyhere/semantic-java</url>
+    </scm>
+</project>
