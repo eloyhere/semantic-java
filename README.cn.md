@@ -27,6 +27,23 @@ Semantic-Java 应运而生，它是一个零依赖的现代 Maven Java 流处理
 4.  **丰富的原生统计支持**
     内置了从 `Byte` 到 `BigDecimal` 等多种数值类型的专门统计类（如 `IntStatistics`、`DoubleStatistics`），开箱即用地支持求和、平均、极值等聚合计算，无需编写样板代码。
 
+### Semantic-Java vs. Java Stream API
+
+为了清晰展示 Semantic-Java 的独特价值，下表将其与 Java 标准 Stream API 进行了关键特性的对比：
+
+| 特性维度 | Java Stream API | Semantic-Java | 备注 |
+| :--- | :--- | :--- | :--- |
+| **核心抽象** | `Stream<T>`，一次性消费管道。 | `Semantic<E>`，基于 `Generator<E>` 的惰性流，支持丰富的状态转换。 | Semantic-Java 的生成器模型为无限流和复杂控制流提供了更好基础。 |
+| **元素索引** | **无原生支持**。元素没有关联的索引，需要外部计数器或使用 `IntStream.range` 等变通方法。 | **核心特性**。每个元素都附带一个 `long` 类型索引，并且可以通过 `redirect`, `translate`, `reverse` 进行动态控制。 | 索引控制是 Semantic-Java 处理时间序列、分页、逻辑重排等场景的“杀手锏”。 |
+| **窗口操作** | **无原生支持**。需通过第三方库（如 Apache Commons Collections 的 `ListUtils.partition`）或手动使用 `collect` 和子列表实现，代码冗长。 | **原生支持**。通过 `toWindow().slide(size, step)` 和 `toWindow().tumble(size)` 直接支持滑动窗口和翻滚窗口。 | 极大简化了移动平均、实时聚合等流式分析任务的代码。 |
+| **惰性求值** | 支持。中间操作是惰性的。 | 支持。继承了相同的惰性求值模型。 | 两者在核心执行模型上一致，有利于处理大规模数据。 |
+| **并行处理** | 成熟。基于 ForkJoin 框架，通过 `parallel()` 和 `sequential()` 切换。 | 支持。通过 `parallel()` 设置并发度，终端 `Collector` 实现并行收集。 | Java Stream 的并行实现更成熟和透明。Semantic-Java 提供了并行化能力，但更侧重于索引和窗口等高级抽象。 |
+| **依赖** | Java 标准库的一部分，零额外依赖。 | 零依赖的独立框架。 | 两者都易于集成，Semantic-Java 保持了轻量级特性。 |
+| **易用性** | 语法简洁，API 稳定，是 Java 开发者的标准技能。 | 在继承 Stream 风格 API 的基础上，引入了更强大的索引和窗口操作，需要学习新概念，但在特定领域更强大。 | 对于熟悉 Stream API 的开发者，Semantic-Java 上手较快，并能解决更复杂的问题。 |
+| **适用场景** | 通用的集合数据处理、过滤、映射、归约。 | 通用的集合处理，**尤其擅长**时间序列分析、事件流处理、需要复杂元素定位（分页、重排）、滑动/翻滚窗口计算的场景。 | Semantic-Java 是 Java Stream 的“超集”和“增强”，在特定领域提供更强大的抽象。 |
+
+**总结**：Java Stream API 是一个优秀且通用的标准工具。而 Semantic-Java 在其基础上，通过引入**索引控制**和**原生窗口操作**这两个核心抽象，显著增强了对**有序数据流**和**时间/序列敏感计算**的处理能力，是处理此类问题的专业化、现代化框架。
+
 ### 核心概念解析
 
 在深入 API 之前，理解以下几个核心抽象至关重要：
@@ -69,6 +86,7 @@ Semantic-Java 应运而生，它是一个零依赖的现代 Maven Java 流处理
 
 ```java
 import pers.eloyhere.semantic.Semantic;
+import pers.eloyhere.semantic.Collectors;
 import java.util.List;
 
 public class QuickStart {
@@ -388,6 +406,8 @@ Semantic-Java 是一个设计精良、思想前卫的 Java 流处理框架。它
 3.  **原生窗口支持**：`WindowCollectable` 提供了开箱即用的滑动窗口和翻滚窗口操作，极大地简化了时间序列分析。
 4.  **卓越的性能基础**：惰性求值和短路优化保证了处理大规模甚至无限流时的效率。
 5.  **开箱即用的工具集**：丰富的 `Collectors` 和专门的 `Statistics` 类覆盖了绝大多数终端处理需求。
+
+**与 Java Stream 的对比优势**：相较于标准的 Java Stream API，Semantic-Java 在保持相似易用性的同时，提供了**元素索引**和**原生窗口操作**这两大关键增强。这使得它在处理有序数据、时间序列分析、分页、数据重排等场景下，代码更简洁、意图更清晰、能力更强大。
 
 Semantic-Java 不仅是一个工具库，更代表了一种处理流式数据的新思路。它鼓励开发者以更声明式、更富于语义的方式来思考和构建数据管道。随着函数式编程在 Java 社区的日益普及，Semantic-Java 这样的框架无疑将在大数据处理、实时计算和系统集成等领域发挥越来越重要的作用。
 
