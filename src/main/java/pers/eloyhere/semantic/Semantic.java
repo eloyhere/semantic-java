@@ -445,6 +445,10 @@ public class Semantic<E> {
         return new OrderedCollectable<>(this.source(), this.concurrent);
     }
 
+    public WindowCollectable<E> toWindow(){
+        return new WindowCollectable<>(this.source(), this.concurrent);
+    }
+
     public UnorderedCollectable<E> toUnordered(){
         return new UnorderedCollectable<>(this.source(), this.concurrent);
     }
@@ -454,6 +458,20 @@ public class Semantic<E> {
         long maximum = Math.max(start, end);
         return new Semantic<>((accept, interrupt) -> {
             for(long index = minimum; index < maximum; index++){
+                if(interrupt.test(index, index)){
+                    break;
+                }
+                accept.accept(index, index);
+            }
+        });
+    }
+
+    public static Semantic<Long> useRange(long start, long end, long step){
+        long minimum = Math.min(start, end);
+        long maximum = Math.max(start, end);
+        long gap = Math.max(1L, Math.abs(step));
+        return new Semantic<>((accept, interrupt) -> {
+            for(long index = minimum; index < maximum; index+=gap){
                 if(interrupt.test(index, index)){
                     break;
                 }

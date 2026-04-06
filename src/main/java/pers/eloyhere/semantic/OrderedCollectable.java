@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 public class OrderedCollectable<E> extends Collectable<E>{
 
-    private final TreeMap<Long, E> buffer;
+    protected final TreeMap<Long, E> buffer;
 
     protected OrderedCollectable(Generator<E> generator) {
         super(1L);

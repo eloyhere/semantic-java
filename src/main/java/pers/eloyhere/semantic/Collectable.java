@@ -5,7 +5,7 @@ import java.util.function.*;
 
 public abstract class Collectable <E> {
 
-    private final long concurrent;
+    protected final long concurrent;
 
     protected Collectable(long concurrent) {
         this.concurrent = concurrent;
