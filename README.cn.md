@@ -392,7 +392,7 @@ List<Event> processedStream = Semantic.useFrom(highPriorityEvents)
 
 ### 并行处理
 
-虽然示例代码中 `Collector` 的 `collect` 方法包含了基于 `ThreadPoolExecutor` 的并行收集逻辑，`Semantic` 类也有 `concurrent` 属性和 `parallel()` 方法，但在提供的代码片段中，`Semantic` 的中间操作本身并未实现并行执行。并行性主要体现在终端收集器（`Collector.collect(generator, concurrent > 1)`）上。收集器可以将工作负载拆分到多个线程，然后合并结果。
+虽然 `Collector` 的 `collect` 方法包含了基于 `ThreadPoolExecutor` 的并行收集逻辑，`Semantic` 类也有 `concurrent` 属性和 `parallel()` 方法，但`Semantic` 的中间操作本身并未实现并行执行。并行性主要体现在终端收集器（`Collector.collect(generator, concurrent > 1)`）上。收集器可以将工作负载拆分到多个线程，然后合并结果。
 
 **使用建议**：对于计算密集型的终端操作（如复杂的归约、大列表分组），且数据量足够大时，可以尝试使用 `.parallel().toUnordered()` 然后配合支持并行的 `Collector` 来获得性能提升。对于简单的操作或小数据量，顺序执行通常更高效。
 
