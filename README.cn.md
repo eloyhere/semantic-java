@@ -75,17 +75,21 @@ public class QuickStart {
     public static void main(String[] args) {
         // 1. 从数组创建流
         List<String> names = Semantic.useFrom(new String[]{"Alice", "Bob", "Charlie"})
-                                     .collect(Collectors.toList());
+            .toUnordered()
+            .collect(Collectors.toList());
 
         System.out.println(names); // 输出: [Alice, Bob, Charlie]
 
         // 2. 从集合创建流
         List<Integer> numbers = Semantic.useFrom(List.of(1, 2, 3, 4, 5))
-                                        .collect(Collectors.toList());
+            .toUnordered()
+            .collect(Collectors.toList());
 
         // 3. 创建数值范围流
         List<Long> range = Semantic.useRange(5, 10) // 生成 5,6,7,8,9
-                                   .collect(Collectors.toList());
+            .toUnordered()
+            .collect(Collectors.toList());
+        
         System.out.println(range); // 输出: [5, 6, 7, 8, 9]
     }
 }
@@ -284,6 +288,7 @@ List<Double> movingAverages = Semantic.useFrom(prices)
         .toUnordered()
         .collect(Collectors.useReduce(0.0, Double::sum)) / 3
     )
+    .toUnordered()
     .collect(Collectors.toList());
 
 System.out.println(movingAverages); // 输出: [101.0, 102.0, 103.0]
