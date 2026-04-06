@@ -392,7 +392,7 @@ Window operations are a powerful feature, but their usage timing should be consi
 
 ### Parallel Processing
 
-While the example code shows that the `Collector`'s `collect` method includes parallel collection logic based on `ThreadPoolExecutor`, and the `Semantic` class has a `concurrent` property and a `parallel()` method, in the provided code snippets, the intermediate operations of `Semantic` itself are not implemented to execute in parallel. Parallelism is mainly manifested in the terminal collector (`Collector.collect(generator, concurrent > 1)`). The collector can split the workload across multiple threads and then merge the results.
+While the the `Collector`'s `collect` method includes parallel collection logic based on `ThreadPoolExecutor`, and the `Semantic` class has a `concurrent` property and a `parallel()` method, the intermediate operations of `Semantic` itself are not implemented to execute in parallel. Parallelism is mainly manifested in the terminal collector (`Collector.collect(generator, concurrent > 1)`). The collector can split the workload across multiple threads and then merge the results.
 
 **Usage Suggestion**: For computationally intensive terminal operations (e.g., complex reductions, grouping of large lists) and with sufficiently large data volumes, you can try using `.parallel().toUnordered()` in conjunction with a parallel-supporting `Collector` for potential performance gains. For simple operations or small data volumes, sequential execution is often more efficient.
 
