@@ -105,6 +105,7 @@ public class BasicPipeline {
         List<String> result = Semantic.useFrom(new String[]{"apple", "banana", "apricot", "cherry", "avocado"})
                 .filter(fruit -> fruit.startsWith("a")) // 1. 过滤: 只保留以'a'开头的水果
                 .map(String::toUpperCase)                // 2. 映射: 转为大写
+                .toUnordered()
                 .collect(Collectors.toList());           // 3. 收集: 转为List
 
         System.out.println(result); // 输出: [APPLE, APRICOT, AVOCADO]
@@ -179,14 +180,14 @@ public class BasicPipeline {
 窗口操作是流处理中处理时间序列和滑动聚合的核心功能。`WindowCollectable` 继承自 `OrderedCollectable`，这意味着它内部维护了一个有序的缓冲区（基于 `TreeMap<Long, E>`），这使得窗口操作能够高效地进行。
 
 - **`slide(long size, long step)`**：创建滑动窗口。
-  - `size`：窗口大小，即每个窗口包含的元素数量
-  - `step`：滑动步长，即窗口每次移动的元素数量
-  - 返回一个 `Semantic<Semantic<E>>`，即一个流的流，其中每个内层流代表一个窗口
+    - `size`：窗口大小，即每个窗口包含的元素数量
+    - `step`：滑动步长，即窗口每次移动的元素数量
+    - 返回一个 `Semantic<Semantic<E>>`，即一个流的流，其中每个内层流代表一个窗口
 
 - **`tumble(long size)`**：创建翻滚窗口（滑动窗口的特例，步长等于窗口大小）。
-  - `size`：窗口大小
-  - 等价于 `slide(size, size)`
-  - 窗口之间不重叠，每个元素只属于一个窗口
+    - `size`：窗口大小
+    - 等价于 `slide(size, size)`
+    - 窗口之间不重叠，每个元素只属于一个窗口
 
 **窗口操作示例**：
 ```java
@@ -197,6 +198,7 @@ List<Double> movingAverages = Semantic.useFrom(prices)
     .toWindow()  // 转换为窗口可收集流
     .slide(3, 1) // 创建大小为3，步长为1的滑动窗口
     .map(window -> window.collect(Collectors.useReduce(0.0, Double::sum)) / 3)
+    .toUnordered()
     .collect(Collectors.toList());
 
 System.out.println(movingAverages); 
@@ -279,6 +281,7 @@ List<Double> movingAverages = Semantic.useFrom(prices)
     .toWindow()                     // 转换为窗口可收集流
     .slide(3, 1)                    // 创建大小为3，步长为1的滑动窗口
     .map(window -> window           // 对每个窗口计算平均值
+        .toUnordered()
         .collect(Collectors.useReduce(0.0, Double::sum)) / 3
     )
     .collect(Collectors.toList());
@@ -297,8 +300,8 @@ List<Integer> windowSums = Semantic.useFrom(numbers)
     .toWindow()
     .tumble(2)  // 翻滚窗口，大小为2
     .map(window -> window.collect(Collectors.useReduce(0, Integer::sum)))
+    .toUnordered()
     .collect(Collectors.toList());
-
 System.out.println(windowSums); // 输出: [3, 7, 11]
 // 解释: [1+2=3, 3+4=7, 5+6=11]
 ```
@@ -308,11 +311,12 @@ System.out.println(windowSums); // 输出: [3, 7, 11]
 从流中取出第2页的数据（每页10条）。
 
 ```java
-List<String> allItems = ... // 假设是一个很大的列表
+List<String> allItems = infinity(); // 假设是一个很大的列表
 
 List<String> page2 = Semantic.useFrom(allItems)
         .skip(10)   // 跳过第一页的10条
         .limit(10)  // 取第二页的10条
+        .toUnordered()
         .collect(Collectors.toList());
 ```
 
