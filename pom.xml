@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pers.eloyhere</groupId>
+    <artifactId>semantic-java</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Semantic-Java</name>
+    <description>Semantic-Java is a modern, maven Java stream processing framework with zero dependencies. It elegantly blends the fluency of Java Streams, the laziness of JavaScript generators, and intelligent index-based control inspired by database indexing — perfect for time-series, event streams, and high-performance data pipelines as a maven dependency.</description>
+    <url>https://github.com/eloyhere/semantic-java</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>eloyhere</id>
+            <name>Eloy Kim</name>
+            <email>eloy.kim@outlook.com</email>
+            <organization>pers.eloyhere</organization>
+            <roles>
+                <role>Project Lead</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/eloyhere/semantic-java.git</connection>
+        <developerConnection>scm:git:ssh://github.com/eloyhere/semantic-java.git</developerConnection>
+        <url>https://github.com/eloyhere/semantic-java</url>
+    </scm>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
+        <maven.javadoc.plugin.version>3.6.0</maven.javadoc.plugin.version>
+        <maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+        <junit.version>5.10.0</junit.version>
+    </properties>
+
+</project>
