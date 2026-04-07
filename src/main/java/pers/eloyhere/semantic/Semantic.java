@@ -308,6 +308,18 @@ public class Semantic<E> {
         }, this.concurrent);
     }
 
+    public Semantic<E> shuffle(){
+        return new Semantic<>((accept, interrupt) -> {
+            AtomicBoolean stop = new AtomicBoolean(false);
+            Random random = new Random(System.currentTimeMillis());
+            this.generator.accept((element, index) -> {
+                Long redirected = random.nextLong();
+                stop.set(stop.get() || interrupt.test(element, redirected));
+                accept.accept(element, redirected);
+            }, (element, index) -> stop.get());
+        }, this.concurrent);
+    }
+
     public Semantic<E> skip(final long n){
         if(n < 0){
             throw new IllegalArgumentException("Count could not less than 0.");
