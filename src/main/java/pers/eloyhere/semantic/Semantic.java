@@ -104,15 +104,14 @@ public class Semantic<E> {
     public Semantic<E> dropWhile(final Predicate<E> predicate) {
         Objects.requireNonNull(predicate, "Predicate could not be null.");
         return new Semantic<>((accept, interrupt) -> {
-            final boolean[] dropping = {true};
+            AtomicLong count = new AtomicLong(-1L);
             this.generator.accept((element, index) -> {
-                if (dropping[0]) {
-                    if (!predicate.test(element)) {
-                        dropping[0] = false;
-                        accept.accept(element, index);
+                if(count.get() == -1L){
+                    if(!predicate.test(element)){
+                        count.getAndIncrement();
                     }
-                } else {
-                    accept.accept(element, index);
+                }else{
+                    accept.accept(element, count.getAndIncrement());
                 }
             }, interrupt);
         }, this.concurrent);
@@ -121,15 +120,14 @@ public class Semantic<E> {
     public Semantic<E> dropWhile(final BiPredicate<E, Long> predicate) {
         Objects.requireNonNull(predicate, "Predicate could not be null.");
         return new Semantic<>((accept, interrupt) -> {
-            final boolean[] dropping = {true};
+            AtomicLong count = new AtomicLong(-1L);
             this.generator.accept((element, index) -> {
-                if (dropping[0]) {
-                    if (!predicate.test(element, index)) {
-                        dropping[0] = false;
-                        accept.accept(element, index);
+                if(count.get() == -1L){
+                    if(!predicate.test(element, index)){
+                        count.getAndIncrement();
                     }
-                } else {
-                    accept.accept(element, index);
+                }else{
+                    accept.accept(element, count.getAndIncrement());
                 }
             }, interrupt);
         }, this.concurrent);
@@ -353,6 +351,17 @@ public class Semantic<E> {
         }, this.concurrent);
     }
 
+    public Semantic<E> translate(final BiFunction<E, Long, Long> translator){
+        return new Semantic<>((accept, interrupt) -> {
+            AtomicBoolean stop = new AtomicBoolean(false);
+            this.generator.accept((element, index) -> {
+                Long redirected = translator.apply(element, index);
+                stop.set(stop.get() || interrupt.test(element, redirected));
+                accept.accept(element, redirected);
+            }, (element, index) -> stop.get());
+        }, this.concurrent);
+    }
+
     @SuppressWarnings("unchecked")
     public OrderedCollectable<E> sorted(){
         return new OrderedCollectable<>(this.source(), (a, b) -> ((Comparable<E>)a).compareTo(b), this.concurrent);
@@ -370,20 +379,16 @@ public class Semantic<E> {
     public Semantic<E> takeWhile(final Predicate<E> predicate) {
         Objects.requireNonNull(predicate, "Predicate could not be null.");
         return new Semantic<>((accept, interrupt) -> {
-            final boolean[] taking = {true};
+            AtomicBoolean stop = new AtomicBoolean(false);
             this.generator.accept((element, index) -> {
-                if (taking[0]) {
-                    if (predicate.test(element)) {
-                        accept.accept(element, index);
-                    } else {
-                        taking[0] = false;
-                    }
+                if(predicate.test(element) && !stop.get()){
+                    accept.accept(element, index);
+                }else{
+                    stop.set(true);
                 }
             }, (element, index) -> {
-                if (!taking[0]) {
-                    return true;
-                }
-                return interrupt.test(element, index);
+                stop.set(stop.get() || interrupt.test(element, index));
+                return stop.get();
             });
         }, this.concurrent);
     }
@@ -391,20 +396,16 @@ public class Semantic<E> {
     public Semantic<E> takeWhile(final BiPredicate<E, Long> predicate) {
         Objects.requireNonNull(predicate, "Predicate could not be null.");
         return new Semantic<>((accept, interrupt) -> {
-            final boolean[] taking = {true};
+            AtomicBoolean stop = new AtomicBoolean(false);
             this.generator.accept((element, index) -> {
-                if (taking[0]) {
-                    if (predicate.test(element, index)) {
-                        accept.accept(element, index);
-                    } else {
-                        taking[0] = false;
-                    }
+                if(predicate.test(element, index) && !stop.get()){
+                    accept.accept(element, index);
+                }else{
+                    stop.set(true);
                 }
             }, (element, index) -> {
-                if (!taking[0]) {
-                    return true;
-                }
-                return interrupt.test(element, index);
+                stop.set(stop.get() || interrupt.test(element, index));
+                return stop.get();
             });
         }, this.concurrent);
     }
